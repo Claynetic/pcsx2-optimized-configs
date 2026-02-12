@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCSX2 Visual Enhancement Suite</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background: #0a0a0f;
+        color: #e0e0e0;
+        min-height: 100vh;
+    }
+    .header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        padding: 24px 32px;
+        border-bottom: 2px solid #533483;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .header-icon {
+        width: 48px; height: 48px;
+        background: linear-gradient(135deg, #e94560, #533483);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+    }
+    .header h1 { font-size: 22px; font-weight: 600; color: #fff; }
+    .header p { font-size: 13px; color: #8892b0; margin-top: 2px; }
+    .container {
+        max-width: 1200px; margin: 0 auto; padding: 24px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .card {
+        background: #13131f; border: 1px solid #2a2a3e;
+        border-radius: 12px; padding: 20px; transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #533483; }
+    .card.full-width { grid-column: 1 / -1; }
+    .card-title {
+        font-size: 15px; font-weight: 600; color: #e94560;
+        text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .status-badge {
+        display: inline-block; padding: 3px 10px; border-radius: 12px;
+        font-size: 11px; font-weight: 600; text-transform: uppercase;
+    }
+    .status-active { background: #1a4a2e; color: #4ade80; }
+    .status-warning { background: #4a3a1a; color: #fbbf24; }
+    .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .preset-card {
+        background: #1a1a2e; border: 2px solid #2a2a3e;
+        border-radius: 10px; padding: 14px; transition: all 0.2s; text-align: center;
+    }
+    .preset-card:hover { border-color: #533483; }
+    .preset-card.active {
+        border-color: #e94560; background: #1a1a35;
+        box-shadow: 0 0 20px rgba(233, 69, 96, 0.15);
+    }
+    .preset-card .name { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 4px; }
+    .preset-card .desc { font-size: 11px; color: #8892b0; line-height: 1.4; }
+    .preset-card .effects { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+    .effect-tag { background: #2a2a3e; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #a8b2d1; }
+    .setting-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 10px 0; border-bottom: 1px solid #1a1a2e;
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 13px; color: #ccd6f6; }
+    .setting-value { font-size: 13px; color: #e94560; font-weight: 600; }
+    .setting-desc { font-size: 11px; color: #5a6180; margin-top: 2px; }
+    .info-box {
+        background: #1a1a2e; border-left: 3px solid #533483;
+        padding: 12px 16px; border-radius: 0 8px 8px 0; margin-top: 12px;
+    }
+    .info-box p { font-size: 12px; color: #8892b0; line-height: 1.6; }
+    .info-box code {
+        background: #2a2a3e; padding: 1px 5px; border-radius: 3px;
+        font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 11px; color: #e94560;
+    }
+    .section-divider { border: none; border-top: 1px solid #2a2a3e; margin: 16px 0; }
+    .recommended-tag {
+        background: #1a4a2e; color: #4ade80; padding: 1px 6px;
+        border-radius: 3px; font-size: 10px; font-weight: 600; margin-left: 4px;
+    }
+    @media (max-width: 900px) {
+        .container { grid-template-columns: 1fr; }
+        .preset-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-icon">&#127918;</div>
+    <div>
+        <h1>PCSX2 Visual Enhancement Suite</h1>
+        <p>ReShade + DX11 Post-Processing Dashboard</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Setup Guide -->
+    <div class="card">
+        <div class="card-title">Quick Setup</div>
+        <div class="info-box" style="border-left-color:#e94560">
+            <p><strong>First time?</strong> Run the setup script:</p>
+            <p><code>.\tools\setup.ps1 -PCSX2Path "C:\path\to\PCSX2"</code></p>
+            <p>This auto-detects your games and generates optimized configs.</p>
+        </div>
+        <hr class="section-divider">
+        <div class="info-box">
+            <p><strong>ReShade Installation:</strong></p>
+            <p>1. Download from <code>https://reshade.me</code></p>
+            <p>2. Target: <code>pcsx2-qt.exe</code> with Direct3D 10/11/12</p>
+            <p>3. Install packages: Standard, SweetFX, AstrayFX, qUINT</p>
+            <p>4. Set <code>AutoSavePreset=0</code> in ReShade.ini</p>
+        </div>
+        <hr class="section-divider">
+        <div class="info-box">
+            <p><strong>Critical ReShade Config:</strong></p>
+            <p>Add subdirectories to <code>EffectSearchPaths</code>:</p>
+            <p><code>Shaders\SweetFX, Shaders\AstrayFX, Shaders\qUINT</code></p>
+            <p>ReShade does NOT search recursively!</p>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="card">
+        <div class="card-title">Controls &amp; Commands</div>
+        <div class="info-box">
+            <p><strong>In-Game Controls:</strong></p>
+            <p><code>Home</code> &mdash; Open/close ReShade overlay</p>
+            <p><code>Scroll Lock</code> &mdash; Toggle all effects on/off</p>
+        </div>
+        <hr class="section-divider">
+        <div class="info-box">
+            <p><strong>PowerShell Commands:</strong></p>
+            <p><code>.\switch_preset.ps1 Cinematic</code> &mdash; Switch preset</p>
+            <p><code>.\switch_preset.ps1 -List</code> &mdash; Show all presets</p>
+            <p><code>.\toggle_enhancements.ps1</code> &mdash; Enable/disable ReShade</p>
+        </div>
+        <hr class="section-divider">
+        <div class="info-box">
+            <p><strong>Renderer Note:</strong> AMD RDNA2/3 GPUs have known Vulkan timeout issues in PCSX2 (<a href="https://github.com/PCSX2/pcsx2/issues/10720" style="color:#e94560">#10720</a>). Use DX11 (Renderer=3) for stability.</p>
+        </div>
+    </div>
+
+    <!-- Presets -->
+    <div class="card full-width">
+        <div class="card-title">Visual Presets</div>
+        <div class="preset-grid">
+            <div class="preset-card active">
+                <div class="name">Default Balanced <span class="recommended-tag">Recommended</span></div>
+                <div class="desc">Clean, sharp image with natural colors. Best all-around.</div>
+                <div class="effects">
+                    <span class="effect-tag">SMAA</span><span class="effect-tag">LumaSharpen</span>
+                    <span class="effect-tag">Clarity</span><span class="effect-tag">Vibrance</span><span class="effect-tag">Curves</span>
+                </div>
+            </div>
+            <div class="preset-card">
+                <div class="name">Maximum Clarity</div>
+                <div class="desc">Aggressive sharpening + CAS. Crystal clear textures.</div>
+                <div class="effects">
+                    <span class="effect-tag">SMAA</span><span class="effect-tag">Smart_Sharp</span>
+                    <span class="effect-tag">Clarity</span><span class="effect-tag">CAS</span>
+                    <span class="effect-tag">Levels</span><span class="effect-tag">Curves</span>
+                </div>
+            </div>
+            <div class="preset-card">
+                <div class="name">Cinematic</div>
+                <div class="desc">Deep contrast, bloom, and cinematic color grading.</div>
+                <div class="effects">
+                    <span class="effect-tag">SMAA</span><span class="effect-tag">LumaSharpen</span>
+                    <span class="effect-tag">HDR</span><span class="effect-tag">BloomingHDR</span>
+                    <span class="effect-tag">LiftGammaGain</span><span class="effect-tag">Vignette</span>
+                </div>
+            </div>
+            <div class="preset-card">
+                <div class="name">Vibrant</div>
+                <div class="desc">Boosted colors and saturation for cartoon/colorful games.</div>
+                <div class="effects">
+                    <span class="effect-tag">SMAA</span><span class="effect-tag">LumaSharpen</span>
+                    <span class="effect-tag">Vibrance</span><span class="effect-tag">LiftGammaGain</span>
+                    <span class="effect-tag">Tonemap</span><span class="effect-tag">Levels</span>
+                </div>
+            </div>
+            <div class="preset-card">
+                <div class="name">Performance</div>
+                <div class="desc">Minimal overhead. Just AA and light sharpening.</div>
+                <div class="effects">
+                    <span class="effect-tag">FXAA</span><span class="effect-tag">CAS</span><span class="effect-tag">Curves</span>
+                </div>
+            </div>
+            <div class="preset-card">
+                <div class="name">Retro Warm</div>
+                <div class="desc">Warm, nostalgic tone with film grain.</div>
+                <div class="effects">
+                    <span class="effect-tag">FXAA</span><span class="effect-tag">LumaSharpen</span>
+                    <span class="effect-tag">DPX</span><span class="effect-tag">FilmGrain</span><span class="effect-tag">Vignette</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shader Reference -->
+    <div class="card">
+        <div class="card-title">Shader Reference</div>
+        <div class="setting-row">
+            <div><div class="setting-label">SMAA</div><div class="setting-desc">Enhanced anti-aliasing, sharper than FXAA</div></div>
+            <span class="status-badge status-active">Low Cost</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">LumaSharpen</div><div class="setting-desc">Luminance-based sharpening</div></div>
+            <span class="status-badge status-active">Low Cost</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">Clarity</div><div class="setting-desc">Local contrast enhancement</div></div>
+            <span class="status-badge status-warning">Medium</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">Vibrance</div><div class="setting-desc">Intelligent saturation</div></div>
+            <span class="status-badge status-active">Low Cost</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">FakeHDR</div><div class="setting-desc">HDR-like tone mapping</div></div>
+            <span class="status-badge status-warning">Medium</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">BloomingHDR</div><div class="setting-desc">Cinematic bloom effect</div></div>
+            <span class="status-badge status-warning">Medium</span>
+        </div>
+    </div>
+
+    <!-- Recommended Global Settings -->
+    <div class="card">
+        <div class="card-title">Recommended Global PCSX2 Settings</div>
+        <div class="setting-row">
+            <div><div class="setting-label">Renderer</div><div class="setting-desc">DX11 for AMD RDNA stability + ReShade</div></div>
+            <div class="setting-value">Direct3D 11</div>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">Internal Resolution</div><div class="setting-desc">Auto-detected by GPU tier</div></div>
+            <div class="setting-value">3x-6x Native</div>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">Anisotropic Filtering</div></div>
+            <div class="setting-value">16x</div>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">CAS Sharpening</div><div class="setting-desc">Built-in PCSX2 sharpening</div></div>
+            <span class="status-badge status-active">Enabled</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">Anti-Blur</div><div class="setting-desc">Removes PS2 native blur filter</div></div>
+            <span class="status-badge status-active">Enabled</span>
+        </div>
+        <div class="setting-row">
+            <div><div class="setting-label">Audio Backend</div><div class="setting-desc">Required for ReShade compatibility</div></div>
+            <div class="setting-value">Cubeb</div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

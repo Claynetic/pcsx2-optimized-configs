@@ -1,0 +1,5 @@
+build_repo.ps1
+show_tree.ps1
+*.log
+*.cache
+*.tmp
