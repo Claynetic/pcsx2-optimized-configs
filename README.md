@@ -4,6 +4,16 @@ Per-game configurations, auto-detection, and ReShade visual enhancement presets 
 
 Every config is cross-referenced against PCSX2's official [GameIndex.yaml](https://github.com/PCSX2/pcsx2/blob/master/bin/resources/GameIndex.yaml) to include all recommended HW fixes, clamp modes, and round modes — then tuned for visual quality at up to 6x native resolution.
 
+## Credits
+
+This project was built by **[Claynetic](https://github.com/Claynetic)** and **[Claude](https://claude.ai)** (Anthropic's AI) working together in a single extended session.
+
+Claynetic provided the game library, hardware testing, and real-time gameplay feedback — playing each title, identifying performance issues, and validating every fix. Claude handled the config engineering: cross-referencing GameIndex.yaml, translating HW fixes to per-game `.ini` format, building the auto-detection engine, assembling the ReShade Visual Suite, and writing the tooling.
+
+Neither of us could have done this alone. Claynetic's hands-on testing caught things no amount of database reading could predict (Black at 5fps, True Crime at 15fps, ReShade presets silently loading nothing). Claude's ability to parse thousands of GameIndex entries and systematically map every fix meant no game was left with missing settings.
+
+**Surprise, Damien** — I went ahead and published it. You said I'd be doing all the work anyway, so here it is. Hope you don't mind.
+
 ## Quick Start
 
 ### Automatic Setup (Recommended)
