@@ -6,7 +6,7 @@ Every config is cross-referenced against PCSX2's official [GameIndex.yaml](https
 
 ## Credits
 
-Built by **[Claynetic](https://github.com/Claynetic)**.
+Built by **[Claynetic](https://github.com/Claynetic)** with **[Claude](https://claude.ai)** (Anthropic). Every config, script, preset, and line of documentation in this project was developed through AI-assisted pair programming using Claude Code.
 
 ## Quick Start
 
